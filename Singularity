@@ -1,6 +1,11 @@
 Bootstrap: docker
 From: ubuntu:18.04
 
+
+%files
+
+    /home-local/kimm58/AtlasToDiffusionReg/code/get_transforms.sh /
+
 %post -c /bin/bash
 
     cd /
@@ -99,7 +104,7 @@ From: ubuntu:18.04
     
 	#Write all your scripts outside and then move them into the corresponding folders in this singularity
 	
-    cp /home-local/kimm58/AtlasToDiffusionReg/code/get_transforms.sh /CODE/
+    mv /get_transforms.sh /CODE/
     #mv src/APPS/* /APPS
     #mv src/CODE/* /CODE
     #mv src/SUPPLEMENTAL/* /SUPPLEMENTAL
