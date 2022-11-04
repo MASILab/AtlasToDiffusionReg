@@ -30,7 +30,7 @@ echo "Computing transform of template to t1..."
 antsRegistrationSyN.sh -d 3 -f ${t1_template} -m ${t1} -o ${name_prefix}
 #extract b0
 echo "Performing b0 Extraction..."
-dwiextract -fslgrad ${bvec} ${bval} ${dwi} - -bzero | mrmath - mean ${b0} -axis 3
+dwiextract ${dwi} -fslgrad ${bvec} ${bval} - -bzero | mrmath - mean ${b0} -axis 3
 #brain extract the T1
 echo "Performing Brain Extraction..."
 bet ${t1} ${t1_bet} -R -f 0.5 -g 0 -m
