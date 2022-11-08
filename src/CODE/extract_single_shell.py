@@ -1,6 +1,7 @@
 THRESHOLD = 1500
 
 import numpy as np
+import pandas as pd
 import nibabel as nib
 from pathlib import Path
 import re
@@ -31,7 +32,7 @@ bval = np.loadtxt(bval_file)
 
 #extract the volumes
 new_bval = bval[bval<THRESHOLD]
-new_bvec = bvec[:, bval<THRESHOLD]
+#new_bvec = bvec[:, bval<THRESHOLD]
 print("Extracting volumes from {} with bvals less than 1500...".format(dwi.name))
 new_img = img[:, :, :, bval<THRESHOLD]
 
