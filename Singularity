@@ -22,58 +22,58 @@ From: ubuntu:18.04
 
     # Install ghostscript for pdf management
     apt-get -y install ghostscript
-######
-    # # Install MRTrix3
-    # apt-get -y install git g++ python python-numpy libeigen3-dev zlib1g-dev libqt4-opengl-dev libgl1-mesa-dev libfftw3-dev libtiff5-dev python3-distutils
-    # cd APPS
-    # git clone https://github.com/MRtrix3/mrtrix3.git
-    # cd mrtrix3
-    # git checkout 3.0.3
-    # ./configure
-    # ./build
-    # cd /
+#####
+    # Install MRTrix3
+    apt-get -y install git g++ python python-numpy libeigen3-dev zlib1g-dev libqt4-opengl-dev libgl1-mesa-dev libfftw3-dev libtiff5-dev python3-distutils
+    cd APPS
+    git clone https://github.com/MRtrix3/mrtrix3.git
+    cd mrtrix3
+    git checkout 3.0.3
+    ./configure
+    ./build
+    cd /
 
-    # # Install FSL
-    # apt-get -y install python wget ca-certificates libglu1-mesa libgl1-mesa-glx libsm6 libice6 libxt6 libpng16-16 libxrender1 libxcursor1 libxinerama1 libfreetype6 libxft2 libxrandr2 libgtk2.0-0 libpulse0 libasound2 libcaca0 libopenblas-base bzip2 dc bc 
-    # wget -O /INSTALLERS/fslinstaller.py "https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py"
-    # cd /INSTALLERS
-    # python fslinstaller.py -d /APPS/fsl -V 6.0.4
-    # cd /
+    # Install FSL
+    apt-get -y install python wget ca-certificates libglu1-mesa libgl1-mesa-glx libsm6 libice6 libxt6 libpng16-16 libxrender1 libxcursor1 libxinerama1 libfreetype6 libxft2 libxrandr2 libgtk2.0-0 libpulse0 libasound2 libcaca0 libopenblas-base bzip2 dc bc 
+    wget -O /INSTALLERS/fslinstaller.py "https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py"
+    cd /INSTALLERS
+    python fslinstaller.py -d /APPS/fsl -V 6.0.4
+    cd /
 
-    # # Install Convert3D (stable build 1.0.0)
-    # apt-get -y install wget tar
-    # wget -O /INSTALLERS/c3d-1.0.0-Linux-x86_64.tar.gz "https://downloads.sourceforge.net/project/c3d/c3d/1.0.0/c3d-1.0.0-Linux-x86_64.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fc3d%2Ffiles%2Fc3d%2F1.0.0%2Fc3d-1.0.0-Linux-x86_64.tar.gz%2Fdownload&ts=1571934949"
-    # tar -xf /INSTALLERS/c3d-1.0.0-Linux-x86_64.tar.gz -C /APPS/
-    # cd /
+    # Install Convert3D (stable build 1.0.0)
+    apt-get -y install wget tar
+    wget -O /INSTALLERS/c3d-1.0.0-Linux-x86_64.tar.gz "https://downloads.sourceforge.net/project/c3d/c3d/1.0.0/c3d-1.0.0-Linux-x86_64.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fc3d%2Ffiles%2Fc3d%2F1.0.0%2Fc3d-1.0.0-Linux-x86_64.tar.gz%2Fdownload&ts=1571934949"
+    tar -xf /INSTALLERS/c3d-1.0.0-Linux-x86_64.tar.gz -C /APPS/
+    cd /
 
-    # # Install ANTs (and compatible CMake)
-    # apt-get -y install build-essential libssl-dev
-    # # CMake: The latest ANTs requires newer version of cmake than can be installed
-    # # through apt-get, so we need to build higher version of cmake from source
-    # cd /INSTALLERS
-    # mkdir cmake_install
-    # cd cmake_install
-    # wget https://github.com/Kitware/CMake/releases/download/v3.23.0-rc2/cmake-3.23.0-rc2.tar.gz
-    # tar -xf cmake-3.23.0-rc2.tar.gz
-    # cd cmake-3.23.0-rc2/
-    # ./bootstrap
-    # make
-    # make install
-    # cd /
-    # # ANTS
-    # cd /INSTALLERS
-    # mkdir ants_installer
-    # cd ants_installer
-    # git clone https://github.com/ANTsX/ANTs.git
-    # git checkout efa80e3f582d78733724c29847b18f3311a66b54
-    # mkdir ants_build
-    # cd ants_build
-    # cmake /INSTALLERS/ants_installer/ANTs -DCMAKE_INSTALL_PREFIX=/APPS/ants
-    # make 2>&1 | tee build.log
-    # cd ANTS-build
-    # make install 2>&1 | tee install.log
-    # cd /
-#########
+    # Install ANTs (and compatible CMake)
+    apt-get -y install build-essential libssl-dev
+    # CMake: The latest ANTs requires newer version of cmake than can be installed
+    # through apt-get, so we need to build higher version of cmake from source
+    cd /INSTALLERS
+    mkdir cmake_install
+    cd cmake_install
+    wget https://github.com/Kitware/CMake/releases/download/v3.23.0-rc2/cmake-3.23.0-rc2.tar.gz
+    tar -xf cmake-3.23.0-rc2.tar.gz
+    cd cmake-3.23.0-rc2/
+    ./bootstrap
+    make
+    make install
+    cd /
+    # ANTS
+    cd /INSTALLERS
+    mkdir ants_installer
+    cd ants_installer
+    git clone https://github.com/ANTsX/ANTs.git
+    git checkout efa80e3f582d78733724c29847b18f3311a66b54
+    mkdir ants_build
+    cd ants_build
+    cmake /INSTALLERS/ants_installer/ANTs -DCMAKE_INSTALL_PREFIX=/APPS/ants
+    make 2>&1 | tee build.log
+    cd ANTS-build
+    make install 2>&1 | tee install.log
+    cd /
+########
     # Install FreeSurfer
     #apt-get -y install bc binutils libgomp1 perl psmisc sudo tar tcsh unzip uuid-dev vim-common libjpeg62-dev
     #wget -O /INSTALLERS/freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz "https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/6.0.0/freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz"
@@ -160,4 +160,10 @@ From: ubuntu:18.04
     #xvfb-run -a --server-num=$((65536+$$)) --server-args="-screen 0 1600x1280x24 -ac" bash /CODE/run_dtiQA.sh /INPUTS /OUTPUTS "$@"
 
 	#bash /CODE/get_transforms.sh
-
+    cd /CODE
+    bash get_transforms.sh
+    bash apply_transforms.sh
+    source venv/bin/activate
+    python3 extract_single_shell.py
+    deactivate
+    bash calc_scalars.sh

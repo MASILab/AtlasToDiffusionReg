@@ -5,8 +5,8 @@ name=$(find /INPUTS -type f | grep .bval | head -n 1 | awk -F '/' '{print $(NF)}
 
 #inputs/intermediates
 dwi_firstshell="/OUTPUTS/${name}%firstshell.nii.gz"
-bval="/INPUTS/${name}.bval"
-bvec="/INPUTS/${name}.bvec"
+bval="/OUTPUTS/${name}%firstshell.bval"
+bvec="/OUTPUTS/${name}%firstshell.bvec"
 b0="/OUTPUTS/${name}%b0.nii.gz"
 
 #outputs
@@ -37,5 +37,9 @@ tensor2metric ${tensors} -adc ${md} -mask ${mask}
 tensor2metric ${tensors} -rd ${rd} -mask ${mask}
 #AD
 tensor2metric ${tensors} -ad ${ad} -mask ${mask}
+
+echo "****************************************"
+echo "FINISHED CALCULATING DIFFUSION SCALARS"
+echo "****************************************"
 
 #ONlY 1500 AND BELOW FOR THE DWI
