@@ -165,5 +165,6 @@ From: ubuntu:18.04
     bash apply_transforms.sh
     source venv/bin/activate
     python3 extract_single_shell.py
-    deactivate
     bash calc_scalars.sh
+    python3 calc_metrics_per_roi.py
+    deactivate

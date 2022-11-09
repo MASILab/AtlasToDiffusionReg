@@ -62,10 +62,10 @@ def calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx)
 
 #################################################################################
 
-inp = Path("/home-local/kimm58/AtlasToDiffusionReg/data/inputs")
-out = Path("/home-local/kimm58/AtlasToDiffusionReg/data/outputs")
-#inp = Path("/INPUTS/")
-#out = Path("/OUTPUTS/")
+#inp = Path("/home-local/kimm58/AtlasToDiffusionReg/data/inputs")
+#out = Path("/home-local/kimm58/AtlasToDiffusionReg/data/outputs")
+inp = Path("/INPUTS/")
+out = Path("/OUTPUTS/")
 file_name = [x for x in inp.glob('*.bval*')][0].name
 name_match = re.search("^(.*).bval$", file_name)
 name = name_match.group(1)
