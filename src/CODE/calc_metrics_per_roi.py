@@ -10,7 +10,7 @@ from tqdm import tqdm
 #Corresponding labels need to be called:
     #"Labels_<NAME>.txt"
 
-
+#turns the atlas label files into dictionaries
 def create_atlas_dictionary(path_to_atlas_desc_file):
     atlas_doc = np.loadtxt(path_to_atlas_desc_file, dtype=str, delimiter='\n')
     atlas_dict = dict()
