@@ -1,7 +1,7 @@
 # AtlasToDiffusionReg
 singularity to register an atlas to the diffusion space of a subject
 
-TO DOs:
+# TO DOs:
 
 -QA of the registered atlases into diffusion space
 	-overlay of atlases on an FA map
@@ -13,11 +13,11 @@ TO DOs:
 -checks to make sure that the inputs are correct and the output directory is valid as well
 
 
-TO RUN:
+# TO RUN:
 
 singularity run -B /path/to/inputs/:/INPUTS -B /path/to/outputs:/OUTPUTS WMAtlas.simg (or whatever the singularity image is called)
 
-INPUTS:
+# INPUTS:
 
 Atlases you want to register
 	-must have "Atlas_" at the beginning of the filename, followed by the atlas name
@@ -44,7 +44,7 @@ Structural Template that the atlases are in the space of
 Structural T1 scan of the subject
 	-needs to be named "t1.nii.gz"
 		-like with the template, can specify an additional line if it is not named so:
-			"-B /path/to/t1:/INPUTS/ti.nii.gz"
+			"-B /path/to/t1:/INPUTS/t1.nii.gz"
 	-CANNOT already be skull stripped
 Diffusion data for the subject (dwmri scan, bval, bvec)
 	-Name can be whatever you want, but they must all have the same name
@@ -53,8 +53,14 @@ Diffusion data for the subject (dwmri scan, bval, bvec)
 			dwmri.bval
 			dwmri.bvec
 		-note that all outputs will use this name you provide
+T1 segmentation from SLANT (optional)
+	-needs to be named "T1_seg.nii.gz"
+	-can technically also be a brain mask
+	-like with the template, can specify an additional line if it is not named so:
+		"-B /path/to/t1:/INPUTS/T1_seg.nii.gz"
+	-If this input is not included, then fsl's bet will be used for the brain extraction and the mask (not recommended)
 
-OUTPUTS are:
+# OUTPUTS are:
 	- the transformations
 		- see below in Notes for how to use them yourself
 	-the registered atlases
@@ -64,7 +70,7 @@ OUTPUTS are:
 		-e.g. <dwiname>%fa.nii.gz
 	-the single shell dwi and its bval/bvec files
 	-the csv file containing the calculations
-Steps:
+# Steps:
 - T1 is registered to the template using ANTs to obtain both the affine and nonlinear transformations
 - T1 is skull stripped and b0 is extracted
 - Transformation from diffusion to t1 space is calculated using FSL
@@ -76,7 +82,7 @@ Steps:
 
 
 
-The singularity assumptions: 
+# The singularity assumptions: 
 -all imaging files provided are gzpied niftis (.nii.gz) 
 -the bvals/bvecs are iun FSL format (can be otherwise, but not guaranteed to work)
 -the dwi data have already been preprocessed for distortion correction, to remove noise, artifacts, etc.
@@ -84,7 +90,7 @@ The singularity assumptions:
 
 
 
-Notes
+# Notes
 - if you  would like to apply the transformations yourself, this is the following ANTs command to do so:
 
 	antsApplyTransforms -d 3 -i <atlas_file> -r <b0_file> -n NearestNeighbor \

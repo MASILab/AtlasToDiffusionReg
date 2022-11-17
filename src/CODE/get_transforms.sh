@@ -25,15 +25,29 @@ converted_inv_transform="/OUTPUTS/${name}%ANTS_b0tot1.txt"
 #prefix for all the files you will be creating
 name_prefix="/OUTPUTS/${name}%"
 
+#get the brain extraction for the t1
+if [[ $(find /INPUTS/T1_seg.nii.gz) ]]; then  #if the SLANT segmentation is in input
+    echo "Found T1 segmentation in the inputs. Using that to create a mask.."
+    t1_mask="/OUTPUTS/${name}%t1_mask.nii.gz"
+    echo "Creating a mask for brain extraction..."
+    fslmaths T1_seg.nii.gz -div T1_seg.nii.gz ${t1_mask}
+    echo "Done creating the structural mask."
+    echo "Using the mask to do brain extraction..."
+    fslmaths ${t1} -mul ${t1_mask} ${t1_bet}
+else                                            #SLANT segmentation is not in the input
+    echo "Did not find T1 segmentation in the INPUTS. Using bet for brain extraction."
+    echo "Performing Brain Extraction..."
+    bet ${t1} ${t1_bet} -R -f 0.5 -g 0 -m
+fi
+echo "Finished brain extraction."
+
 #gets the affine and nonlinear transforms from template to subject T1 space
 echo "Computing transform of template to t1..."
 antsRegistrationSyN.sh -d 3 -f ${t1_template} -m ${t1} -o ${name_prefix}
 #extract b0
 echo "Performing b0 Extraction..."
 dwiextract ${dwi} -fslgrad ${bvec} ${bval} - -bzero | mrmath - mean ${b0} -axis 3
-#brain extract the T1
-echo "Performing Brain Extraction..."
-bet ${t1} ${t1_bet} -R -f 0.5 -g 0 -m
+
 #get the FSL transform from b0 to T1 space
 echo "Computing transform of t1 to b0..."
 epi_reg --epi=${b0} --t1=${t1} --t1brain=${t1_bet} --out=${fsl_inv_transform}
