@@ -13,7 +13,7 @@ epi_transform="/OUTPUTS/${name}%ANTS_t1tob0.txt" ####
 
 #outputs
 mask_name="/OUTPUTS/${name}%" ####
-mask="/OUTPUTS/${name}%_dwimask.nii.gz"####
+mask="/OUTPUTS/${name}%_dwimask.nii.gz" ####
 tensors="/OUTPUTS/${name}%tensor.nii.gz"
 #predicted_signal: reconst="/OUTPUTS/${name}%reconst_from_tensor.nii.gz"
 fa="/OUTPUTS/${name}%fa.nii.gz"

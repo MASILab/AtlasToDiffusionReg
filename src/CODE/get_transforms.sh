@@ -30,7 +30,7 @@ if [[ $(find /INPUTS/T1_seg.nii.gz) ]]; then  #if the SLANT segmentation is in i
     echo "Found T1 segmentation in the inputs. Using that to create a mask.."
     t1_mask="/OUTPUTS/${name}%t1_mask.nii.gz"
     echo "Creating a mask for brain extraction..."
-    fslmaths T1_seg.nii.gz -div T1_seg.nii.gz ${t1_mask}
+    fslmaths /INPUTS/T1_seg.nii.gz -div /INPUTS/T1_seg.nii.gz ${t1_mask}
     echo "Done creating the structural mask."
     echo "Using the mask to do brain extraction..."
     fslmaths ${t1} -mul ${t1_mask} ${t1_bet}

@@ -43,21 +43,32 @@ def get_label_file_names(path, atlas_names):
                 labels.append(f)
     return labels
 
-def calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx):
+def calc_volume(key, label, label_nifti):
+    (sx,sy,sz) = label_nifti.header.get_zooms()[:3]    #get the voxel dimensions
+    if np.sum(label == key) == 0:
+        return np.nan                               #returns nan if the volume is zero
+    return np.sum(label == key) * sx * sy * sz      #this will give the volume of the ROI
+
+
+def calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx, label_nifti):
     row = [atlas_name, roi]
     numPixels = np.sum(label == key)
     if numPixels == 0:
-        row = row + [np.nan]*len(scalars)*2   #*2 for mean and std dev
+        row = row + [np.nan]*len(scalars)*3   #*3 for mean and std dev and median
         df.loc[idx] = row
         return
     for scalar,scalar_prefix in zip(scalars, scalar_prefixes):
         if np.sum(np.isnan(scalar[label == key])) > 0.5 * numPixels:
+            row.append(np.nan) #median
             row.append(np.nan) #mean
             row.append(np.nan)  #std
         else:
+            row.append(np.nanmedian(scalar[label == key]))
             row.append(np.nanmean(scalar[label == key]))
-            row.append(np.nanstd(scalar[label == key]))
-    df.loc[idx] = row
+            row.append(np.nanstd(scalar[label == key]))         #want to also add volume
+    volume = calc_volume(key, label, label_nifti)
+    row.append(volume)
+    df.loc[idx] = row   #actually adding the row to the dataframe
     return
 
 #################################################################################
@@ -88,11 +99,14 @@ scalar_niftis = [nib.load(x) for x in scalar_files]
 scalars = [x.get_fdata() for x in scalar_niftis]
 scalar_prefixes = ['fa','md','ad','rd']
 
-#setting up df
+#setting up the dataframe (df)
+    #sets up the column names here
 cols = ["Atlas Name", "ROI NAME"]
 for p in scalar_prefixes:
+    cols.append(p+'-median')
     cols.append(p+'-mean')
     cols.append(p+'-std')
+cols.append("Volume_(mm^3)")
 df = pd.DataFrame(columns=[cols])
 
 #get atlas names
@@ -117,14 +131,14 @@ for label_name in label_names:
 
 #actually calculating the rois
 idx =0
-for atlas_name,label_nifti,atlas_dict in zip(atlas_names, atlases, atlas_dicts):
+for atlas_name,label_nifti,atlas_dict in zip(atlas_names, atlases, atlas_dicts):    #loops through all the atlases
     label = label_nifti.get_fdata()
-    print("Calculating mean and std for diffusion scalars of {}....".format(atlas_name))
-    for key,roi in tqdm(atlas_dict.items()):
-        calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx)
+    print("Calculating volume and median, mean, std for diffusion scalars of {}....".format(atlas_name))
+    for key,roi in tqdm(atlas_dict.items()):                            #loops through each ROI for the current atlas
+        calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx, label_nifti)
         idx += 1
 
-print("Finished calculating mean and std for all ROIs of all atlases")
+print("Finished calculating volume and median, mean, std for all ROIs of all atlases")
 print("Outputting csv...")
 df.to_csv(out/("{}%diffusionmetrics.csv".format(name)), index=False)
 
