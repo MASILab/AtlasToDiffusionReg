@@ -6,6 +6,10 @@ From: ubuntu:18.04
 
     #/home-local/kimm58/AtlasToDiffusionReg/code/get_transforms.sh /
 
+%help
+
+https://github.com/MASILab/AtlasToDiffusionReg
+
 %post -c /bin/bash
 
     cd /
