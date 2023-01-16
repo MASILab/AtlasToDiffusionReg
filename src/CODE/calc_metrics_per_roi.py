@@ -9,6 +9,8 @@ from tqdm import tqdm
     #"Atlas_<NAME>.nii.gz" where <NAME> is the name of the atlas
 #Corresponding labels need to be called:
     #"Labels_<NAME>.txt"
+#Brain segmentation must be called "T1_seg.nii.gz" (if there is one)
+    #the label file must be called "T1_seg.txt"
 
 #turns the atlas label files into dictionaries
 def create_atlas_dictionary(path_to_atlas_desc_file):
@@ -58,7 +60,7 @@ def calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx,
         df.loc[idx] = row
         return
     for scalar,scalar_prefix in zip(scalars, scalar_prefixes):
-        if np.sum(np.isnan(scalar[label == key])) > 0.5 * numPixels:
+        if np.sum(np.isnan(scalar[label == key])) > 0.5 * numPixels:    #scalar[label == key] is not working for T1seg
             row.append(np.nan) #median
             row.append(np.nan) #mean
             row.append(np.nan)  #std
@@ -86,6 +88,7 @@ fa = out/("{}%{}.nii.gz".format(name, 'fa'))
 md = out/("{}%{}.nii.gz".format(name, 'md'))
 ad = out/("{}%{}.nii.gz".format(name, 'ad'))
 rd = out/("{}%{}.nii.gz".format(name, 'rd'))
+seg = out/("{}%T1_seg_to_dwi.nii.gz".format(name))
 
 #GAMEPLAN
     #loop through atlases
@@ -101,7 +104,7 @@ scalar_prefixes = ['fa','md','ad','rd']
 
 #setting up the dataframe (df)
     #sets up the column names here
-cols = ["Atlas Name", "ROI NAME"]
+cols = ["Labelmap Name", "ROI NAME"]
 for p in scalar_prefixes:
     cols.append(p+'-median')
     cols.append(p+'-mean')
@@ -128,6 +131,19 @@ for label_name in label_names:
     dictionary_file = inp/(label_name)
     atlas_dict = create_atlas_dictionary(dictionary_file)
     atlas_dicts.append(atlas_dict)
+
+#add in segmentation map if it exists as well
+path_to_seg_labels = inp/("T1_seg.txt")
+if seg.exists() and path_to_seg_labels.exists():
+    atlas_names.append("T1_segmentation")   #add the segmentation to the list of atlases/labelmap names
+    seg_nifti = nib.load(seg)
+    atlases.append(seg_nifti)           #add the nifti to the list of labelmaps
+    label_doc = np.loadtxt(path_to_seg_labels, dtype=str, delimiter='\n')
+    label_dict = dict()
+    for label in label_doc[1:]:
+        splits = label.split(',')
+        label_dict[int(splits[0])] = splits[1]
+    atlas_dicts.append(label_dict)                  #add the label dicitonary to the list of labelmap dictionaries
 
 #actually calculating the rois
 idx =0

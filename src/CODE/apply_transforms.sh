@@ -24,6 +24,14 @@ find /INPUTS -type f | grep -i 'atlas' | while IFS= read -r line; do
     -t ${epi_transform} -t [${t1_to_template_affine},1] -t ${t1_to_template_invwarp} -o /OUTPUTS/${name}%${atlas_name}.nii.gz
 done
 
+#Also registers the T1 segmentation if it is available
+t1seg="/INPUTS/T1_seg.nii.gz"
+if [[ $(find ${t1seg}) ]]; then
+    echo "T1 segmentation found in inputs."
+    echo "Now applying transform to T1 segmentation into DWI space.."
+    antsApplyTransforms -d 3 -i ${t1seg} -r ${b0} -n NearestNeighbor -t ${epi_transform} -o /OUTPUTS/${name}%T1_seg_to_dwi.nii.gz
+fi
+
 echo "**********************************"
 echo "FINISHED ALL REGISTRATIONS"
 echo "**********************************"
