@@ -14,6 +14,7 @@ epi_transform="/OUTPUTS/${name}%ANTS_t1tob0.txt" ####
 #outputs
 mask_name="/OUTPUTS/${name}%" ####
 mask="/OUTPUTS/${name}%_dwimask.nii.gz" ####
+dil_mask="/OUTPUTS/${name}%dilated_mask.nii.gz" ##dilated mask for dwi2tensor
 tensors="/OUTPUTS/${name}%tensor.nii.gz"
 #predicted_signal: reconst="/OUTPUTS/${name}%reconst_from_tensor.nii.gz"
 fa="/OUTPUTS/${name}%fa.nii.gz"
@@ -34,21 +35,24 @@ else
 fi
 echo "Done creating the diffusion brain mask."
 
+#dilating the mask for dwi2tensor
+echo "Now dilating the mask for dwi2tensor..."
+fslmaths ${mask} -dilM ${dil_mask}
 
 echo "Calculating the tensors..."
 #calculate tensors and reconstruction from dwi, mask, bvec, bval
-dwi2tensor ${dwi_firstshell} ${tensors} -fslgrad ${bvec} ${bval} -mask ${mask} #-predicted_signal tensor_test/dwmri_reconst_from_tensor.nii.gz
+dwi2tensor ${dwi_firstshell} ${tensors} -fslgrad ${bvec} ${bval} -mask ${dil_mask} #-predicted_signal tensor_test/dwmri_reconst_from_tensor.nii.gz
 
 #now, use the tensors, dwi, and mask to compute scalars
 echo "Calculating the scalars..."
 #FA
-tensor2metric ${tensors} -fa ${fa} -mask ${mask}
+tensor2metric ${tensors} -fa ${fa} -mask ${dil_mask}
 #MD
-tensor2metric ${tensors} -adc ${md} -mask ${mask}
+tensor2metric ${tensors} -adc ${md} -mask ${dil_mask}
 #RD
-tensor2metric ${tensors} -rd ${rd} -mask ${mask}
+tensor2metric ${tensors} -rd ${rd} -mask ${dil_mask}
 #AD
-tensor2metric ${tensors} -ad ${ad} -mask ${mask}
+tensor2metric ${tensors} -ad ${ad} -mask ${dil_mask}
 
 echo "****************************************"
 echo "FINISHED CALCULATING DIFFUSION SCALARS"

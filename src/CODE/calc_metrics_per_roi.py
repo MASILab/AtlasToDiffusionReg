@@ -56,7 +56,7 @@ def calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx,
     row = [atlas_name, roi]
     numPixels = np.sum(label == key)
     if numPixels == 0:
-        row = row + [np.nan]*len(scalars)*3   #*3 for mean and std dev and median
+        row = row + [np.nan]*(len(scalars)*3+1)   #*3 for mean and std dev and median
         df.loc[idx] = row
         return
     for scalar,scalar_prefix in zip(scalars, scalar_prefixes):
