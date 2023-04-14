@@ -4,29 +4,44 @@ singularity to register an atlas to the diffusion space of a subject
 # TO DOs:
 
 -QA of the registered atlases into diffusion space
+
 	-overlay of atlases on an FA map
+
 	-perhaps something else as well
+
 -Possibly options
+
 	-just calculating the transforms and not applying them
+	
 	-only keeping certain outputs
+	
 -have the outputs more organized than just in one outputs folder
+
 -checks to make sure that the inputs are correct and the output directory is valid as well
 
 
 # TO RUN:
 
-singularity run -B /path/to/inputs/:/INPUTS -B /path/to/outputs:/OUTPUTS WMAtlas.simg (or whatever the singularity image is called)
+	singularity run -B /path/to/inputs/:/INPUTS -B /path/to/outputs:/OUTPUTS WMAtlas.simg (or whatever the singularity image is called)
 
 # INPUTS:
 
 Atlases you want to register
+
 	-must have "Atlas_" at the beginning of the filename, followed by the atlas name
+	
 		-i.e. "Atlas_JHU_MNI_WMPM_Type_I.nii.gz"
+		
 			-Name of the Atlas is then "JHU_MNI_WMPM_Type_I"
+			
 Labels for each Atlas in the inputs
+
 	-the corresponding labels must be named: "Labels_<Atlas_Name>.txt"
+	
 		-if we use the atlas above, the label file should be called "Labels_JHU_MNI_WMPM_Type_I.txt"
+		
 	-the label files should have the following structure:
+	
 		#INTENSITY/Integer_label Region_Of_Interest_Name
 
 		0 Background			
@@ -34,42 +49,74 @@ Labels for each Atlas in the inputs
 		2 Cingulate_Gyrus_left
 		3 Middle_Frontal_Gyrus_left
 		...
+		
 	- In other words, each line should have an intensity value of the labelmap and the corresponding name of the label delimited by a space
+	
 	- The first line of the text file should be the background with intensity of zero
+	
 	- The names if the ROIs in the labelmap should not contain any spaces: the only spaces should be between the intensity and corresponding ROI name
 Structural Template that the atlases are in the space of
+
 	-needs to be named "template.nii.gz"
+	
 		-if it is not named this you can specify so by adding the following option in the singularity call:
+		
 			singularity run -B ...:/INPUTS -B ...:/OUTPUTS -B /path/to/the/template/:/INPUTS/template.nii.gz WMAtlas
+			
 Structural T1 scan of the subject
+
 	-needs to be named "t1.nii.gz"
+	
 		-like with the template, can specify an additional line if it is not named so:
+		
 			"-B /path/to/t1:/INPUTS/t1.nii.gz"
+			
 	-CANNOT already be skull stripped
+	
 Diffusion data for the subject (dwmri scan, bval, bvec)
+
 	-Name can be whatever you want, but they must all have the same name
+	
 		-i.e if the name you want to give it is "dwmri"
+		
 			dwmri.nii.gz
 			dwmri.bval
 			dwmri.bvec
+			
 		-note that all outputs will use this name you provide
+		
 T1 segmentation from SLANT (optional)
+
 	-needs to be named "T1_seg.nii.gz"
+	
 	-can technically also be a brain mask
+	
 	-like with the template, can specify an additional line if it is not named so:
+	
 		"-B /path/to/t1:/INPUTS/T1_seg.nii.gz"
+		
 	-If this input is not included, then fsl's bet will be used for the brain extraction and the mask (not recommended)
 
 # OUTPUTS are:
+
 	- the transformations
+	
 		- see below in Notes for how to use them yourself
+		
 	-the registered atlases
+	
 		- <dwiname>%<atlas_name>.nii.gz
+		
 	-skull stripped t1 and the extracted b0
+	
 	-diffusion scalar maps
+	
 		-e.g. <dwiname>%fa.nii.gz
+		
 	-the single shell dwi and its bval/bvec files
+	
 	-the csv file containing the calculations
+	
 # Steps:
 - T1 is registered to the template using ANTs to obtain both the affine and nonlinear transformations
 - T1 is skull stripped and b0 is extracted
@@ -83,14 +130,19 @@ T1 segmentation from SLANT (optional)
 
 
 # The singularity assumptions: 
+
 -all imaging files provided are gzpied niftis (.nii.gz) 
+
 -the bvals/bvecs are iun FSL format (can be otherwise, but not guaranteed to work)
+
 -the dwi data have already been preprocessed for distortion correction, to remove noise, artifacts, etc.
--the t1 is NOT skull strippe
+
+-the t1 is NOT skull stripped
 
 
 
 # Notes
+
 - if you  would like to apply the transformations yourself, this is the following ANTs command to do so:
 
 	antsApplyTransforms -d 3 -i <atlas_file> -r <b0_file> -n NearestNeighbor \
