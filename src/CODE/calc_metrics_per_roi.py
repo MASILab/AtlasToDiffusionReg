@@ -60,7 +60,7 @@ def calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx,
         df.loc[idx] = row
         return
     for scalar,scalar_prefix in zip(scalars, scalar_prefixes):
-        if np.sum(np.isnan(scalar[label == key])) > 0.5 * numPixels:    #scalar[label == key] is not working for T1seg
+        if np.sum(np.isnan(scalar[label == key])) > 0.5 * numPixels:    
             row.append(np.nan) #median
             row.append(np.nan) #mean
             row.append(np.nan)  #std
@@ -141,7 +141,7 @@ if seg.exists() and path_to_seg_labels.exists():
     label_doc = np.loadtxt(path_to_seg_labels, dtype=str, delimiter='\n')
     label_dict = dict()
     for label in label_doc[1:]:
-        splits = label.split(',')
+        splits = re.split(r'[,\s]+', label)  #splits by comma or space #.split(',')
         label_dict[int(splits[0])] = splits[1]
     atlas_dicts.append(label_dict)                  #add the label dicitonary to the list of labelmap dictionaries
 

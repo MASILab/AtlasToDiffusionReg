@@ -171,4 +171,5 @@ https://github.com/MASILab/AtlasToDiffusionReg
     python3 extract_single_shell.py
     bash calc_scalars.sh
     python3 calc_metrics_per_roi.py
+    python3 create_QA_png.py
     deactivate
