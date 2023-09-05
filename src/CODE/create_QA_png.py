@@ -84,7 +84,7 @@ def setup_and_make_png_seg(lut_file, imgfile, segfile, atlas_name, outfile, skip
     lut_data = np.genfromtxt(lut_file, skip_header=skip_header, dtype=str)
     #print(lut_data)
     # Extract the indices, colors, and labels from the LUT data
-    print(lut_data)
+    #print(lut_data)
     lut_indices = lut_data[:, 0].astype(int)
     #print(lut_data)
     #print(lut_data[:, 2:])
