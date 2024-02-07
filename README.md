@@ -1,5 +1,8 @@
 # AtlasToDiffusionReg
-singularity to register an atlas to the diffusion space of a subject
+Singularity to register a structural atlas to the diffusion space of a subject
+
+author: Michael Kim
+
 
 # TO DOs:
 
