@@ -1,4 +1,4 @@
-# AtlasToDiffusionReg
+# AtlasToDiffusionReg v1.1
 Singularity to register a structural atlas to the diffusion space of a subject
 
 author: Michael Kim
