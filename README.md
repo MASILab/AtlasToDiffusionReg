@@ -4,6 +4,15 @@ Singularity to register a structural atlas to the diffusion space of a subject
 author: Michael Kim
 
 
+### NOTE:
+Depending on the version of numpy, you might get the error:
+
+next_arr = _load_from_filelike(
+TypeError: control character 'delimiter' cannot be a newline (`\r` or `\n`).
+
+To alleviate, downgrade to an earlier version of numpy
+
+
 # TO DOs:
 
 -QA of the registered atlases into diffusion space
