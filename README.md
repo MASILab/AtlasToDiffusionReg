@@ -7,8 +7,8 @@ author: Michael Kim
 ### NOTE:
 Depending on the version of numpy, you might get the error:
 
-next_arr = _load_from_filelike(
-TypeError: control character 'delimiter' cannot be a newline (`\r` or `\n`).
+		next_arr = _load_from_filelike(
+	TypeError: control character 'delimiter' cannot be a newline (`\r` or `\n`).
 
 To alleviate, downgrade to an earlier version of numpy
 
