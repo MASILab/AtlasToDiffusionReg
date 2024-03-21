@@ -14,11 +14,11 @@ from tqdm import tqdm
 
 #turns the atlas label files into dictionaries
 def create_atlas_dictionary(path_to_atlas_desc_file):
-    atlas_doc = np.loadtxt(path_to_atlas_desc_file, dtype=str, delimiter='\n')
+    atlas_doc = np.loadtxt(path_to_atlas_desc_file, dtype=str) #removed delimiter='\n'
     atlas_dict = dict()
     for label in atlas_doc[1:]:   #assuming that the labelmap desciption must have a header
-        splits = label.split(" ")
-        atlas_dict[int(splits[0])] = splits[1]
+        #splits = label.split(" ")
+        atlas_dict[int(label[0])] = label[1] #changed with delimiter='\n' removal
     return atlas_dict
 
 #get list of atlas names from the inputs folder
@@ -138,11 +138,11 @@ if seg.exists() and path_to_seg_labels.exists():
     atlas_names.append("T1_segmentation")   #add the segmentation to the list of atlases/labelmap names
     seg_nifti = nib.load(seg)
     atlases.append(seg_nifti)           #add the nifti to the list of labelmaps
-    label_doc = np.loadtxt(path_to_seg_labels, dtype=str, delimiter='\n')
+    label_doc = np.loadtxt(path_to_seg_labels, dtype=str)   #removed delimiter='\n'
     label_dict = dict()
     for label in label_doc[1:]:
-        splits = re.split(r'[,\s]+', label)  #splits by comma or space #.split(',')
-        label_dict[int(splits[0])] = splits[1]
+        #splits = re.split(r'[,\s]+', label)  #splits by comma or space #.split(',')
+        label_dict[int(label[0])] = label[1]        #changed with delimiter='\n' removal
     atlas_dicts.append(label_dict)                  #add the label dicitonary to the list of labelmap dictionaries
 
 #actually calculating the rois
