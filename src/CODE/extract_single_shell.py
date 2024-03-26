@@ -51,6 +51,17 @@ def get_bval_str(new_bval):
     s = s + '\n'
     return s
 
+def round(num, base):
+    """
+    Taken from Leon Cai's PreQual
+    """
+
+    d = num / base
+    if d % 1 >= 0.5:
+        return base*np.ceil(d)
+    else:
+        return base*np.floor(d)
+
 file_name = [x for x in Path("/INPUTS").glob('*.bval*')][0].name
 name_match = re.search("^(.*).bval$", file_name)
 name = name_match.group(1)
@@ -76,11 +87,14 @@ img = nii.get_fdata()
 bval = np.loadtxt(bval_file)
 bvec = np.loadtxt(bvec_file)
 
+#round the bvals
+rounded_bvals = np.array([round(b, 100) for b in bval])
+
 #get indices of volumes to extract
-indices = np.where(bval<THRESHOLD)
+indices = np.where(rounded_bvals<THRESHOLD)
 
 #extract the volumes
-new_bval = bval[bval<THRESHOLD]
+new_bval = rounded_bvals[rounded_bvals<THRESHOLD]
 
 dirs = []
 for x in bvec:
@@ -97,7 +111,7 @@ bvaltxt= get_bval_str(new_bval)
 
 #new_bvec = bvec[:, bval<THRESHOLD]
 print("Extracting volumes from {} with bvals less than 1500...".format(dwi.name))
-new_img = img[:, :, :, bval<THRESHOLD]
+new_img = img[:, :, :, rounded_bvals<THRESHOLD]
 
 #save the extracted volumes
 nii2 = nib.Nifti1Image(new_img, nii.affine)
