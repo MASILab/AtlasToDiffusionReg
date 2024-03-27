@@ -91,10 +91,10 @@ bvec = np.loadtxt(bvec_file)
 rounded_bvals = np.array([round(b, 100) for b in bval])
 
 #get indices of volumes to extract
-indices = np.where(rounded_bvals<THRESHOLD)
+indices = np.where(rounded_bvals<=THRESHOLD)
 
 #extract the volumes
-new_bval = rounded_bvals[rounded_bvals<THRESHOLD]
+new_bval = rounded_bvals[rounded_bvals<=THRESHOLD]
 
 dirs = []
 for x in bvec:
@@ -111,7 +111,7 @@ bvaltxt= get_bval_str(new_bval)
 
 #new_bvec = bvec[:, bval<THRESHOLD]
 print("Extracting volumes from {} with bvals less than 1500...".format(dwi.name))
-new_img = img[:, :, :, rounded_bvals<THRESHOLD]
+new_img = img[:, :, :, rounded_bvals<=THRESHOLD]
 
 #save the extracted volumes
 nii2 = nib.Nifti1Image(new_img, nii.affine)
