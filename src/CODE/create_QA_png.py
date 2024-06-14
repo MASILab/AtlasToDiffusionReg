@@ -73,6 +73,10 @@ def setup_and_make_png(lut_file, imgfile, segfile, atlas_name, outdir, skip_head
     img = nib.load(imgfile)
     imgdata = np.squeeze(img.get_fdata()[:,:,:])
 
+    ##if you want to reorient to LAS prior to plotting the images, use the following code:
+    #new_affine = nib.orientations.apply_orientation(affine, nib.orientations.axcodes2ornt('LAS'))
+    #reoriented_img = nib.Nifti1Image(img.get_fdata(), new_affine)
+
     assert segdata.shape == imgdata.shape, "{} and {} are not the same dimensions: {} and {}".format(str(imgfile), str(segfile), str(imgdata.shape), str(segdata.shape))
 
     #create the png
