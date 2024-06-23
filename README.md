@@ -12,6 +12,8 @@ Depending on the version of numpy, you might get the error:
 
 To alleviate, downgrade to an earlier version of numpy
 
+EDIT: this should be fixed now
+
 
 # TO DOs:
 
