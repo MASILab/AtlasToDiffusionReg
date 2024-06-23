@@ -5,6 +5,13 @@ From: ubuntu:18.04
 %files
 
     #/home-local/kimm58/AtlasToDiffusionReg/code/get_transforms.sh /
+    
+    #The following should run as long as you ran git pull for the repository
+
+    FILES/Labels_JHU_MNI_SS_WMPM_Type-III.txt /FILES/Labels_JHU_MNI_SS_WMPM_Type-III.txt
+    FILES/Atlas_JHU_MNI_SS_WMPM_Type-III.nii.gz /FILES/Atlas_JHU_MNI_SS_WMPM_Type-III.nii.gz
+    FILES/template.nii.gz /FILES/template.nii.gz
+    FILES/T1_seg.txt /FILES/T1_seg.txt
 
 %help
 
@@ -164,6 +171,12 @@ https://github.com/MASILab/AtlasToDiffusionReg
     #xvfb-run -a --server-num=$((65536+$$)) --server-args="-screen 0 1600x1280x24 -ac" bash /CODE/run_dtiQA.sh /INPUTS /OUTPUTS "$@"
 
 	#bash /CODE/get_transforms.sh
+    if [[ ! -f /INPUTS/template.nii.gz ]]; then
+        ln -s /FILES/template.nii.gz /INPUTS/template.nii.gz
+        ln -s /FILES/Atlas_JHU_MNI_SS_WMPM_Type-III.nii.gz /INPUTS/Atlas_JHU_MNI_SS_WMPM_Type-III.nii.gz
+        ln -s /FILES/Labels_JHU_MNI_SS_WMPM_Type-III.txt /INPUTS/Labels_JHU_MNI_SS_WMPM_Type-III.txt
+    fi
+    ln -s /FILES/T1_seg.txt /INPUTS/T1_seg.txt
     cd /CODE
     bash get_transforms.sh
     bash apply_transforms.sh
