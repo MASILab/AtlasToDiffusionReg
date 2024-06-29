@@ -1,2 +1,2 @@
 #!/bin/bash
-source /CODE/venv/bin/activate
+/bin/bash -c ". /CODE/venv/bin/activate; exec /bin/bash -i"
