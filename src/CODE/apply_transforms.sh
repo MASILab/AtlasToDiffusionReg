@@ -17,7 +17,7 @@ b0="/OUTPUTS/${name}%b0.nii.gz"
 
 echo "Applying transforms to atlases..."
 #have to apply the transforms to each atlas/labelmap that is input
-find /INPUTS -type f | grep -i 'atlas' | while IFS= read -r line; do
+find /INPUTS \( -type f -o -type l \) | grep -i 'atlas' | while IFS= read -r line; do
     atlas_name=$(echo $line | awk -F '/' '{print $(NF)}' | sed -E 's/\.nii.*//g')
     #applies the 3 transforms in sequence
     antsApplyTransforms -d 3 -i ${line} -r ${b0} -n NearestNeighbor \
