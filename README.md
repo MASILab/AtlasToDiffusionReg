@@ -17,11 +17,6 @@ EDIT: this should be fixed now
 
 # TO DOs:
 
--QA of the registered atlases into diffusion space
-
-	-overlay of atlases on an FA map
-
-	-perhaps something else as well
 
 -Possibly options
 
