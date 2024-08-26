@@ -52,23 +52,28 @@ def calc_volume(key, label, label_nifti):
     return np.sum(label == key) * sx * sy * sz      #this will give the volume of the ROI
 
 
-def calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx, label_nifti):
+def calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx, label_nifti, mask):
     row = [atlas_name, roi]
     numPixels = np.sum(label == key)
+    voxels_mask = np.logical_and(label == key, mask)
+    #get the voxels we want to consider for calculating scalars
     if numPixels == 0:
         row = row + [np.nan]*(len(scalars)*3+1)   #*3 for mean and std dev and median
         df.loc[idx] = row
         return
     for scalar,scalar_prefix in zip(scalars, scalar_prefixes):
-        if np.sum(np.isnan(scalar[label == key])) > 0.5 * numPixels:    
+        if np.sum(np.isnan(scalar[voxels_mask])) > 0.5 * numPixels:    
             row.append(np.nan) #median
             row.append(np.nan) #mean
             row.append(np.nan)  #std
         else:
-            row.append(np.nanmedian(scalar[label == key]))
-            row.append(np.nanmean(scalar[label == key]))
-            row.append(np.nanstd(scalar[label == key]))         #want to also add volume
-    volume = calc_volume(key, label, label_nifti)
+            row.append(np.nanmedian(scalar[voxels_mask]))
+            row.append(np.nanmean(scalar[voxels_mask]))
+            row.append(np.nanstd(scalar[voxels_mask]))
+    #note that we are separating the volume calculation from the scalar calculation because the ROIs come from the T1 image, which
+    #usually has a better FOV than the diffusion image. The best to calculate the volume is to use only the applied transform for the
+    #T1 image, but no one ever seems to use the volume anyway and it would only affect the regions near the brainstem
+    volume = calc_volume(key, label, label_nifti) 
     row.append(volume)
     df.loc[idx] = row   #actually adding the row to the dataframe
     return
@@ -82,6 +87,10 @@ out = Path("/OUTPUTS/")
 file_name = [x for x in inp.glob('*.bval*')][0].name
 name_match = re.search("^(.*).bval$", file_name)
 name = name_match.group(1)
+#get the mask from PreQual
+mask_file = inp/("mask.nii.gz")
+mask_nii = nib.load(mask_file)
+mask = mask_nii.get_fdata()
 
 #inputs/intermediates
 fa = out/("{}%{}.nii.gz".format(name, 'fa'))
@@ -151,7 +160,7 @@ for atlas_name,label_nifti,atlas_dict in zip(atlas_names, atlases, atlas_dicts):
     label = label_nifti.get_fdata()
     print("Calculating volume and median, mean, std for diffusion scalars of {}....".format(atlas_name))
     for key,roi in tqdm(atlas_dict.items()):                            #loops through each ROI for the current atlas
-        calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx, label_nifti)
+        calc_scalars(atlas_name, roi, key, label, df, scalars, scalar_prefixes, idx, label_nifti, mask)
         idx += 1
 
 print("Finished calculating volume and median, mean, std for all ROIs of all atlases")
