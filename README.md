@@ -1,7 +1,16 @@
-# AtlasToDiffusionReg v1.1
+# AtlasToDiffusionReg v1.3
 Singularity to register a structural atlas to the diffusion space of a subject
 
 author: Michael Kim
+
+
+### Changelogs
+
+v1.3: Now runs properly with `-e --contain`
+
+v1.2: Included EVE3 labels and the MNI/JHU templates inside the simg. Now, you can specify an option for whether you want to run MNI or EVE3 registration without providing the specific inputs for these. Still able to use own if you want.
+
+v1.1: Added output PN
 
 
 ### NOTE:
