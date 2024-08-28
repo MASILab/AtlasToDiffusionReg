@@ -14,6 +14,9 @@ v1.1: Added output PN
 
 
 ### NOTE:
+
+When runnning, make sure to bind the `/tmp` directory using `-B /tmp:/tmp` for MRtrix3 commands
+
 Depending on the version of numpy, you might get the error:
 
 		next_arr = _load_from_filelike(
