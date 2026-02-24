@@ -1,1 +1,5 @@
 WMAtlas/
+*.nii.gz
+*.csv
+*.txt
+

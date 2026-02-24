@@ -172,7 +172,38 @@ https://github.com/MASILab/AtlasToDiffusionReg
 	#this creates the PDF, figure out later
     #xvfb-run -a --server-num=$((65536+$$)) --server-args="-screen 0 1600x1280x24 -ac" bash /CODE/run_dtiQA.sh /INPUTS /OUTPUTS "$@"
 
+    #v1.5: added the low/high for the bval threshold instead of hard coding it in
+    low=0
+    high=1500
+    atlastype=""
+
+    # Loop through all arguments
+    while [[ $# -gt 0 ]]; do
     case "$1" in
+        --low)
+        low=$(echo "$2" | cut -d '.' -f 1)
+        shift 2
+        ;;
+        --high)
+        high=$(echo "$2" | cut -d '.' -f 1)
+        shift 2
+        ;;
+        --EVE3|--MNI|--custom)
+        atlas_type="$1"  # Capture the atlas type instead of relying on $1 later
+        shift
+        ;;
+        --) # End of options
+        shift
+        break
+        ;;
+        -*)
+        echo "Unknown option: $1" >&2
+        exit 1
+        ;;
+    esac
+    done
+
+    case "$atlas_type" in
         --EVE3)
             echo "Registering to EVE3 Atlas."
             ln -s /FILES/JHUEVE3/template.nii.gz /INPUTS/template.nii.gz
@@ -189,7 +220,7 @@ https://github.com/MASILab/AtlasToDiffusionReg
             ;;
         *)
             echo "Invalid arguments."
-            echo "USAGE: singularity run <BINDS> <SIMG> [--EVE3|--MNI|--custom]"
+            echo "USAGE: singularity run <BINDS> <SIMG> [--EVE3|--MNI|--custom] [--low <val>] [--high <val>]"
             exit 1
             ;;
     esac
@@ -199,13 +230,32 @@ https://github.com/MASILab/AtlasToDiffusionReg
     #    ln -s /FILES/Atlas_JHU_MNI_SS_WMPM_Type-III.nii.gz /INPUTS/Atlas_JHU_MNI_SS_WMPM_Type-III.nii.gz
     #    ln -s /FILES/Labels_JHU_MNI_SS_WMPM_Type-III.txt /INPUTS/Labels_JHU_MNI_SS_WMPM_Type-III.txt
     #fi
-    ln -s /FILES/T1_seg.txt /INPUTS/T1_seg.txt
+    seglink="False"
+    if [ ! -e /INPUTS/T1_seg.txt ]; then
+        ln -s /FILES/T1_seg.txt /INPUTS/T1_seg.txt
+        seglink="True"
+    fi
     cd /CODE
     bash get_transforms.sh
     bash apply_transforms.sh
-    bash activate_venv.sh
-    python3 extract_single_shell.py
+    #bash activate_venv.sh
+    python3 extract_single_shell.py --u_thresh $high --l_thresh $low
     bash calc_scalars.sh
     python3 calc_metrics_per_roi.py
     python3 create_QA_png.py
     deactivate
+    case "$1" in
+        --EVE3)
+            echo "Registering to EVE3 Atlas."
+            rm /INPUTS/template.nii.gz
+            rm /INPUTS/Atlas_JHU_MNI_SS_WMPM_Type-III.nii.gz
+            rm /INPUTS/Labels_JHU_MNI_SS_WMPM_Type-III.txt
+            ;;
+        --MNI)
+            echo "Registering to MNI152 Atlas."
+            rm /INPUTS/template.nii.gz
+            ;;
+    esac
+    if [ $seglink == "True" ];
+        rm /INPUTS/T1_seg.txt
+    fi

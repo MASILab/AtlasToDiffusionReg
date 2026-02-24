@@ -32,6 +32,7 @@ else
     echo "Calculating the dwi mask..."
     #calculate the brain mask
     bet ${b0} ${mask_name} -f 0.25 -m -n -R
+    mv /OUTPUTS/${name}%_mask.nii.gz /OUTPUTS/${name}%_dwimask.nii.gz
 fi
 echo "Done creating the diffusion brain mask."
 

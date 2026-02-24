@@ -5,7 +5,13 @@ import pandas as pd
 import nibabel as nib
 from pathlib import Path
 import re
+import argparse
 
+def pa():
+    p = argparse.ArgumentParser(description="Extracts the volumes less than or equal to some threshold (as well as greater than or equal) from a diffusion image, and outputs the new diffusion image and corresponding bval/bvec files.")
+    p.add_argument('--u_thresh', type=int, default=1500, help="The upper threshold for bvals to be extracted. Default is 1500.")
+    p.add_argument('--l_thresh', type=int, default=0, help="The lower threshold for bvals to be extracted. Default is 0 to remain consistent with processing, but 500 is recommended.")
+    return p.parse_args()
 
 def get_new_bvecs(new_bvec):
     bdirs = []      #bdirs will be the new bvec list
@@ -62,23 +68,34 @@ def round(num, base):
     else:
         return base*np.floor(d)
 
-file_name = [x for x in Path("/INPUTS").glob('*.bval*')][0].name
-name_match = re.search("^(.*).bval$", file_name)
-name = name_match.group(1)
+args = pa()
 
-#inputs
-dwi = Path("/INPUTS/{}.nii.gz".format(name))
-bval_file = Path("/INPUTS/{}.bval".format(name))
-bvec_file = Path("/INPUTS/{}.bvec".format(name))
+# file_name = [x for x in Path("/INPUTS").glob('*.bval*')][0].name
+# name_match = re.search("^(.*).bval$", file_name)
+# name = name_match.group(1)
 
-#outputs
-output_file = Path("/OUTPUTS/{}%firstshell.nii.gz".format(name))
-bval_new_file = Path("/OUTPUTS/{}%firstshell.bval".format(name))
-bvec_new_file = Path("/OUTPUTS/{}%firstshell.bvec".format(name))
+# #inputs
+# dwi = Path("/INPUTS/{}.nii.gz".format(name))
+# bval_file = Path("/INPUTS/{}.bval".format(name))
+# bvec_file = Path("/INPUTS/{}.bvec".format(name))
 
-#dwi = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.nii.gz")
-#bval_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.bval")
-#bvec_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.bvec")
+# #outputs
+# output_file = Path("/OUTPUTS/{}%firstshell.nii.gz".format(name))
+# bval_new_file = Path("/OUTPUTS/{}%firstshell.bval".format(name))
+# bvec_new_file = Path("/OUTPUTS/{}%firstshell.bvec".format(name))
+
+
+## for testing
+name = "dwmri"
+dwi = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.nii.gz")
+bval_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.bval")
+bvec_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.bvec")
+
+output_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/outputs/{}%firstshell.nii.gz".format(name))
+bval_new_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/outputs/{}%firstshell.bval".format(name))
+bvec_new_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/outputs/{}%firstshell.bvec".format(name))
+######
+
 
 #must extract the volumes less than 1500 bval from the diffusion image
 nii = nib.load(dwi)
@@ -91,10 +108,12 @@ bvec = np.loadtxt(bvec_file)
 rounded_bvals = np.array([round(b, 100) for b in bval])
 
 #get indices of volumes to extract
-indices = np.where(rounded_bvals<=THRESHOLD)
+#indices = np.where(rounded_bvals<=THRESHOLD)
+indices = np.where(((rounded_bvals<=args.u_thresh) & (rounded_bvals>=args.l_thresh)) | (rounded_bvals==0))
 
 #extract the volumes
-new_bval = rounded_bvals[rounded_bvals<=THRESHOLD]
+#new_bval = rounded_bvals[rounded_bvals<=THRESHOLD]
+new_bval = rounded_bvals[indices]
 
 dirs = []
 for x in bvec:
@@ -110,8 +129,9 @@ bvaltxt= get_bval_str(new_bval)
 
 
 #new_bvec = bvec[:, bval<THRESHOLD]
-print("Extracting volumes from {} with bvals less than 1500...".format(dwi.name))
-new_img = img[:, :, :, rounded_bvals<=THRESHOLD]
+print("Extracting volumes from {} with bvals <= {} and >= {}...".format(dwi.name, args.u_thresh, args.l_thresh))
+#new_img = img[:, :, :, rounded_bvals<=THRESHOLD]
+new_img = img[:, :, :, indices[0]]
 
 #save the extracted volumes
 nii2 = nib.Nifti1Image(new_img, nii.affine)
