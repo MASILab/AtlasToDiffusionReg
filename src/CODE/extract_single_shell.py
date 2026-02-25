@@ -70,30 +70,30 @@ def round(num, base):
 
 args = pa()
 
-# file_name = [x for x in Path("/INPUTS").glob('*.bval*')][0].name
-# name_match = re.search("^(.*).bval$", file_name)
-# name = name_match.group(1)
+file_name = [x for x in Path("/INPUTS").glob('*.bval*')][0].name
+name_match = re.search("^(.*).bval$", file_name)
+name = name_match.group(1)
 
-# #inputs
-# dwi = Path("/INPUTS/{}.nii.gz".format(name))
-# bval_file = Path("/INPUTS/{}.bval".format(name))
-# bvec_file = Path("/INPUTS/{}.bvec".format(name))
+#inputs
+dwi = Path("/INPUTS/{}.nii.gz".format(name))
+bval_file = Path("/INPUTS/{}.bval".format(name))
+bvec_file = Path("/INPUTS/{}.bvec".format(name))
 
-# #outputs
-# output_file = Path("/OUTPUTS/{}%firstshell.nii.gz".format(name))
-# bval_new_file = Path("/OUTPUTS/{}%firstshell.bval".format(name))
-# bvec_new_file = Path("/OUTPUTS/{}%firstshell.bvec".format(name))
+#outputs
+output_file = Path("/OUTPUTS/{}%firstshell.nii.gz".format(name))
+bval_new_file = Path("/OUTPUTS/{}%firstshell.bval".format(name))
+bvec_new_file = Path("/OUTPUTS/{}%firstshell.bvec".format(name))
 
 
 ## for testing
-name = "dwmri"
-dwi = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.nii.gz")
-bval_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.bval")
-bvec_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.bvec")
+# name = "dwmri"
+# dwi = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.nii.gz")
+# bval_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.bval")
+# bvec_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/inputs/dwmri.bvec")
 
-output_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/outputs/{}%firstshell.nii.gz".format(name))
-bval_new_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/outputs/{}%firstshell.bval".format(name))
-bvec_new_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/outputs/{}%firstshell.bvec".format(name))
+# output_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/outputs/{}%firstshell.nii.gz".format(name))
+# bval_new_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/outputs/{}%firstshell.bval".format(name))
+# bvec_new_file = Path("/home-local/kimm58/AtlasToDiffusionReg/data/BLSA_test/outputs/{}%firstshell.bvec".format(name))
 ######
 
 
