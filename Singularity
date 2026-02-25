@@ -182,7 +182,7 @@ https://github.com/MASILab/AtlasToDiffusionReg
     atlastype=""
 
     # Loop through all arguments
-    while [[ $# -gt 0 ]]; do
+    while [ "$#" -gt 0 ]; do
     case "$1" in
         --low)
         low=$(echo "$2" | cut -d '.' -f 1)
@@ -248,7 +248,7 @@ https://github.com/MASILab/AtlasToDiffusionReg
     python3 calc_metrics_per_roi.py
     python3 create_QA_png.py
     deactivate
-    case "$1" in
+    case "$atlastype" in
         --EVE3)
             echo "Registering to EVE3 Atlas."
             rm /INPUTS/template.nii.gz
