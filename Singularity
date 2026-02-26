@@ -90,6 +90,46 @@ https://github.com/MASILab/AtlasToDiffusionReg
     cd ANTS-build
     make install 2>&1 | tee install.log
     cd /
+
+    # ##new commands
+    # cd /INSTALLERS
+    # wget https://github.com/Kitware/CMake/releases/download/v3.23.0/cmake-3.23.0.tar.gz
+    # tar -xf cmake-3.23.0.tar.gz
+    # cd cmake-3.23.0
+    # ./bootstrap
+    # make
+    # make install
+    # cd /
+    # cd /INSTALLERS
+
+    # apt-get update && apt-get install -y \
+    #     zlib1g-dev \
+    #     libbz2-dev \
+    #     liblzma-dev \
+    #     libpng-dev \
+    #     libtiff-dev \
+    #     libjpeg-dev \
+    #     libexpat1-dev \
+    #     libssl-dev \
+    #     libcurl4-openssl-dev \
+    #     build-essential \
+    #     git \
+    #     wget
+    # git clone https://github.com/ANTsX/ANTs.git
+    # cd ANTs
+    # git checkout efa80e3f582d78733724c29847b18f3311a66b54
+    # mkdir build
+    # cd build
+    # cmake .. \
+    # -DCMAKE_INSTALL_PREFIX=/APPS/ants \
+    # -DBUILD_SHARED_LIBS=ON \
+    # -DZLIB_INCLUDE_DIR=/usr/include \
+    # -DZLIB_LIBRARY=/usr/lib/x86_64-linux-gnu/libz.so
+    # make 2>&1 | tee build.log
+    # #cd ANTS-build
+    # make install 2>&1 | tee install.log
+    # cd /
+
 ########
     # Install FreeSurfer
     #apt-get -y install bc binutils libgomp1 perl psmisc sudo tar tcsh unzip uuid-dev vim-common libjpeg62-dev
@@ -260,6 +300,6 @@ https://github.com/MASILab/AtlasToDiffusionReg
             rm /INPUTS/template.nii.gz
             ;;
     esac
-    if [ $seglink == "True" ];
+    if [ $seglink == "True" ]; then
         rm /INPUTS/T1_seg.txt
     fi
