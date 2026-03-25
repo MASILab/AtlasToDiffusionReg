@@ -288,7 +288,7 @@ https://github.com/MASILab/AtlasToDiffusionReg
     python3 calc_metrics_per_roi.py
     python3 create_QA_png.py
     deactivate
-    case "$atlastype" in
+    case "$atlas_type" in
         --EVE3)
             echo "Registering to EVE3 Atlas."
             rm /INPUTS/template.nii.gz
@@ -300,6 +300,6 @@ https://github.com/MASILab/AtlasToDiffusionReg
             rm /INPUTS/template.nii.gz
             ;;
     esac
-    if [ $seglink == "True" ]; then
+    if [ "$seglink" = "True" ]; then
         rm /INPUTS/T1_seg.txt
     fi
